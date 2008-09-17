@@ -1,6 +1,6 @@
 require 'yaml'
-require 'ERB'
 require 'active_support'
+require 'erb'
 require 'aws/s3'
 
 class BackupFuConfigError < StandardError; end
