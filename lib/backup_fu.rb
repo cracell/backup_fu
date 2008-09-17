@@ -1,4 +1,5 @@
 require 'yaml'
+require 'ERB'
 require 'active_support'
 require 'aws/s3'
 
@@ -10,7 +11,7 @@ class BackupFu
   def initialize
     db_conf = YAML.load_file(File.join(RAILS_ROOT, 'config', 'database.yml')) 
     @db_conf = db_conf[RAILS_ENV].symbolize_keys
-    fu_conf = YAML.load_file(ERB.new(File.join(RAILS_ROOT, 'config', 'backup_fu.yml')).result)
+    fu_conf = YAML::load(ERB.new(File.read("config/backup_fu.yml")).result)
     @fu_conf = fu_conf[RAILS_ENV].symbolize_keys
     @fu_conf[:mysqldump_options] ||= '--complete-insert --skip-extended-insert'
     @verbose = !@fu_conf[:verbose].nil?
@@ -36,7 +37,11 @@ class BackupFu
     when 'postgresql'
       cmd = niceify "PGPASSWORD=#{password} #{dump_path} --user=#{@db_conf[:username]} --host=#{host} --port=#{port} #{@db_conf[:database]} > #{full_dump_path}"
     when 'mysql'
-      cmd = niceify "#{dump_path} #{@fu_conf[:mysqldump_options]} #{host} #{port} --user=#{@db_conf[:username]} #{password} #{@db_conf[:database]} > #{full_dump_path}"
+      if @fu_conf.has_key?(:dump_all)
+        cmd = niceify "#{dump_path} #{@fu_conf[:mysqldump_options]} #{host} #{port} --user=#{@db_conf[:username]} #{password} > #{full_dump_path}"
+      else
+        cmd = niceify "#{dump_path} #{@fu_conf[:mysqldump_options]} #{host} #{port} --user=#{@db_conf[:username]} #{password} #{@db_conf[:database]} > #{full_dump_path}"
+      end
     end
     puts cmd if @verbose
     `#{cmd}`
@@ -173,7 +178,7 @@ class BackupFu
   end
   
   def db_filename
-    "#{@fu_conf[:app_name]}_#{@fu_conf[:server_name]}_#{@fu_conf[:timestamp]}_db.sql"
+    "#{@fu_conf[:backup_filename]}_db.sql"
   end
   
   def db_filename_tarred
