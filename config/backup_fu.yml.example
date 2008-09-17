@@ -19,3 +19,7 @@ production:
   aws_secret_access_key: --replace me with your AWS secret access key--
   backup_filename: <%= "#{timestamp}_#{server_name}" %>
   dump_all: true # Remove if you want this off.
+
+##### To setup a cron for this. 
+# prompt: crontab -e
+# 1,15,30,45 * * * * cd /mnt/app/current; sudo rake backup RAILS_ENV=production > /dev/null
