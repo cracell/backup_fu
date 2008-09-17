@@ -10,7 +10,7 @@ class BackupFu
   def initialize
     db_conf = YAML.load_file(File.join(RAILS_ROOT, 'config', 'database.yml')) 
     @db_conf = db_conf[RAILS_ENV].symbolize_keys
-    fu_conf = YAML.load_file(File.join(RAILS_ROOT, 'config', 'backup_fu.yml'))
+    fu_conf = YAML.load_file(ERB.new(File.join(RAILS_ROOT, 'config', 'backup_fu.yml')).result)
     @fu_conf = fu_conf[RAILS_ENV].symbolize_keys
     @fu_conf[:mysqldump_options] ||= '--complete-insert --skip-extended-insert'
     @verbose = !@fu_conf[:verbose].nil?
@@ -173,7 +173,7 @@ class BackupFu
   end
   
   def db_filename
-    "#{@fu_conf[:app_name]}_#{ @timestamp }_db.sql"
+    "#{@fu_conf[:app_name]}_#{@fu_conf[:server_name]}_#{@fu_conf[:timestamp]}_db.sql"
   end
   
   def db_filename_tarred
