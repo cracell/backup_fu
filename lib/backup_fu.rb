@@ -37,7 +37,7 @@ class BackupFu
     when 'postgresql'
       cmd = niceify "PGPASSWORD=#{password} #{dump_path} --user=#{@db_conf[:username]} --host=#{host} --port=#{port} #{@db_conf[:database]} > #{full_dump_path}"
     when 'mysql'
-      if @fu_conf.has_key(:dump_all)
+      if @fu_conf.has_key?(:dump_all)
         cmd = niceify "#{dump_path} -A #{@fu_conf[:mysqldump_options]} #{host} #{port} --user=#{@db_conf[:username]} #{password} > #{full_dump_path}"
       else
         cmd = niceify "#{dump_path} #{@fu_conf[:mysqldump_options]} #{host} #{port} --user=#{@db_conf[:username]} #{password} #{@db_conf[:database]} > #{full_dump_path}"
