@@ -17,5 +17,5 @@ production:
   s3_bucket: some-s3-bucket
   aws_access_key_id: --replace me with your AWS access key id--
   aws_secret_access_key: --replace me with your AWS secret access key--
-  server_name: <%= YAML.load_file(File.join(RAILS_ROOT, 'config', 'server.yml'))['name'] %>
-  timestamp: <%= Time.now.strftime("%Y%m%d_%p") %>
+  backup_filename: <%= "#{timestamp}_#{server_name}" %>
+  dump_all: true
