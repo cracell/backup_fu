@@ -18,4 +18,4 @@ production:
   aws_access_key_id: --replace me with your AWS access key id--
   aws_secret_access_key: --replace me with your AWS secret access key--
   backup_filename: <%= "#{timestamp}_#{server_name}" %>
-  dump_all: true
+  dump_all: true # Remove if you want this off.
