@@ -1,3 +1,5 @@
+<% server_name = YAML.load_file(File.join(RAILS_ROOT, 'config', 'server.yml'))['name'] %>
+<% timestamp = Time.now.strftime("%Y%m%d_%p") %>
 development:
   # The app_name is used as the backup filename prefix
   app_name: replace_me
@@ -5,12 +7,16 @@ development:
   s3_bucket: some-s3-bucket
   aws_access_key_id: --replace me with your AWS access key id--
   aws_secret_access_key: --replace me with your AWS secret access key--
+  backup_filename: <%= "#{timestamp}_#{server_name}" %>
+  dump_all: true # Remove if you want this off.
 
 staging:
   app_name: replace_me
   s3_bucket: some-s3-bucket
   aws_access_key_id: --replace me with your AWS access key id--
   aws_secret_access_key: --replace me with your AWS secret access key--
+  backup_filename: <%= "#{timestamp}_#{server_name}" %>
+  dump_all: true # Remove if you want this off.
 
 production:
   app_name: replace_me
